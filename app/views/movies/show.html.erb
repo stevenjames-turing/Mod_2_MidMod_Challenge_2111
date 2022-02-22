@@ -1,11 +1,12 @@
 <h1><%= @movie.title %></h1>
 
 <section id = "movie_data">
-    Creation Year: <%= @movie.creation_year %>
+    Creation Year: <%= @movie.creation_year %> <br>
     Genre: <%= @movie.genre %>
 </section>
-
+<br>
 <section id = "actors">
+    Actors:
     <ul>
     <% @movie.sorted_actors.each do |actor| %>
         <li>
@@ -18,3 +19,9 @@
 <section id = "actor_stats">
     Actor Average Age: <%= @movie.actor_average_age %>
 </section>
+
+<%= form_with url: "/movies/#{@movie.id}/", method: :patch, local: true do |f| %>
+    <%= f.label :add_actor, "Add Actor" %>
+    <%= f.text_field :actor %>
+    <%= f.submit "Submit" %>
+<% end %>

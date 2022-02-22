@@ -20,6 +20,7 @@ RSpec.describe 'movies show' do
         @actor_movie_3 = ActorMovie.create!(movie_id: @movie_1.id, actor_id: @actor_3.id) 
         @actor_movie_4 = ActorMovie.create!(movie_id: @movie_2.id, actor_id: @actor_1.id) 
         @actor_movie_5 = ActorMovie.create!(movie_id: @movie_2.id, actor_id: @actor_4.id) 
+        @actor_movie_5 = ActorMovie.create!(movie_id: @movie_3.id, actor_id: @actor_5.id) 
     end
     it 'displays movie info' do
         visit "/movies/#{@movie_1.id}/"
@@ -32,21 +33,40 @@ RSpec.describe 'movies show' do
     
     it 'has list of actors and average age of all actors' do 
         visit "/movies/#{@movie_1.id}/"
-
+        
         within "#actors" do 
             expect(page).to have_content(@actor_1.name)
             expect(page).to have_content(@actor_2.name)
             expect(page).to have_content(@actor_3.name)
             expect(page).to_not have_content(@actor_4.name)
-
+            
             expect(@actor_2.name).to appear_before(@actor_1.name)
             expect(@actor_2.name).to appear_before(@actor_3.name)
             expect(@actor_3.name).to appear_before(@actor_1.name)
             expect(@actor_1.name).to_not appear_before(@actor_2.name)
         end
-
+        
         within "#actor_stats" do 
             expect(page).to have_content(@movie_1.actor_average_age)
         end
     end
+    
+    it 'can add actor to a movie' do 
+        visit "/movies/#{@movie_3.id}/"
+
+        expect(page).to have_content(@actor_5.name)
+        expect(page).to_not have_content(@actor_1.name)
+        expect(page).to_not have_content(@actor_2.name)
+        expect(page).to_not have_content(@actor_3.name)
+        expect(page).to_not have_content(@actor_4.name)
+        
+        expect(page).to have_content("Add Actor")
+        fill_in 'actor', with: "#{@actor_1.name}"
+        click_button 'Submit'
+        expect(current_path).to eq("/movies/#{@movie_3.id}/")
+        
+        expect(page).to have_content(@actor_1.name)
+    end
+
+    
 end

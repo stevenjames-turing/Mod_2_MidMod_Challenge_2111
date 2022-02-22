@@ -8,6 +8,8 @@ class Movie < ApplicationRecord
   end
 
   def actor_average_age
-    actors.average(:age).round(2)
+    if actors.count >= 1
+      actors.average(:age).round(2)
+    end
   end
 end
